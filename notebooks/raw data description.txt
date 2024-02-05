@@ -47,7 +47,7 @@
     'Local industriel. commercial ou assimilé' X
     'Maison' -> House
       TEXT
-'surface_reelle_bati' -> built area
+'surface_reelle_bati' -> living area
     INT
 'nombre_pieces_principales' -> number of rooms
     INT

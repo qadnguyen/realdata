@@ -21,7 +21,7 @@
     'Appartement' -> appartment
     'Maison' -> House
       TEXT
-'surface_reelle_bati' -> built area
+'surface_reelle_bati' -> living area
       INT
 'nombre_pieces_principales' -> number of rooms (living, sleeping, eating)
       INT
