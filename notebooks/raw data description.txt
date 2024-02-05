@@ -1,0 +1,62 @@
+'id_mutation' X
+'date_mutation' -> date
+      DATETIME
+'numero_disposition' X
+'nature_mutation',
+    Vente -> normal sale
+    vente en l’état futur d’achèvement -> sale off-plan
+    vente de terrain à bâtir X
+    adjudication, X
+    expropriation ou échange X
+      TEXT
+'valeur_fonciere' -> price
+      FLOAT
+'adresse_numero' X
+'adresse_suffixe' X
+'adresse_nom_voie' X
+'adresse_code_voie' X
+'code_postal' -> postal code
+      FLOAT
+'code_commune' -> city
+      INT
+'nom_commune' X
+'code_departement' -> region
+      INT
+'ancien_code_commune', X
+'ancien_nom_commune' X
+'id_parcelle' X
+'ancien_id_parcelle', X
+'numero_volume' X
+'lot1_numero' X
+'lot1_surface_carrez' X
+'lot2_numero', X
+'lot2_surface_carrez' X
+'lot3_numero' X
+'lot3_surface_carrez', X
+'lot4_numero' X
+'lot4_surface_carrez' X
+'lot5_numero', X
+'lot5_surface_carrez' X
+'nombre_lots' -> number of units
+    1 : only keep value 1
+      INT
+'code_type_local' X
+'type_local' -> property type
+    'Appartement' -> appartment
+    'Dépendance' X
+    'Local industriel. commercial ou assimilé' X
+    'Maison' -> House
+      TEXT
+'surface_reelle_bati' -> living area
+    INT
+'nombre_pieces_principales' -> number of rooms
+    INT
+'code_nature_culture' X
+'nature_culture' X
+'code_nature_culture_speciale', X
+'nature_culture_speciale' X
+'surface_terrain' -> land area
+    INT
+'longitude'
+'latitude'
+'section_prefixe' X
