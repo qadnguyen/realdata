@@ -25,7 +25,7 @@
       INT
 'nombre_pieces_principales' -> number of rooms (living, sleeping, eating)
       INT
-'surface_terrain' -> land area
+'surface_terrain' -> land area X (a lot of NaNs)
       INT
 'longitude'
 'latitude'
