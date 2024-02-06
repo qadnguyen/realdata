@@ -1,0 +1,31 @@
+13 features :
+
+'date_mutation' -> date
+      DATETIME
+'nature_mutation' -> built
+    Vente -> built
+    vente en l’état futur d’achèvement -> off-plan
+      TEXT
+'valeur_fonciere' -> price
+      FLOAT
+'code_postal' -> postal code
+      FLOAT
+'code_commune' -> city
+      INT
+'code_departement' -> region
+      INT
+'nombre_lots' -> number of units
+    1 : only keep value 1
+      INT
+'type_local' -> property type
+    'Appartement' -> appartment
+    'Maison' -> House
+      TEXT
+'surface_reelle_bati' -> living area
+      INT
+'nombre_pieces_principales' -> number of rooms (living, sleeping, eating)
+      INT
+'surface_terrain' -> land area
+      INT
+'longitude'
+'latitude'
