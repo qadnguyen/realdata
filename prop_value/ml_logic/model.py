@@ -3,6 +3,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import cross_val_score
 from xgboost import XGBRegressor
+import pickle
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -37,6 +38,10 @@ def model_xgb(X_train, y_train, X_test, y_test, X_all, y_all):
     model_xgb = XGBRegressor()
 
     model_xgb.fit(X_train, y_train)
+    with open('xgb_model.pkl', 'wb') as file:
+        pickle.dump(model_xgb, file)
+
+
     y_pred = model_xgb.predict(X_test)
 
     mse = mean_squared_error(y_pred, y_test)
