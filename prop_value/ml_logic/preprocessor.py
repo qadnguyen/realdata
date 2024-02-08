@@ -13,6 +13,7 @@ from sklearn.ensemble import RandomForestRegressor
 from category_encoders import TargetEncoder
 from sklearn.pipeline import FeatureUnion
 from sklearn.model_selection import train_test_split
+import pickle
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -133,6 +134,17 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     y_train = pd.DataFrame(y_train, columns = ['price'])
     y_test = pd.DataFrame(y_test, columns = ['price'])
 
+    # Save trained preprocessing_pipeline
+    with open('preprocessing_pipeline.pkl', 'wb') as file:
+        pickle.dump(preprocessing_pipeline, file)
+
+    # Apply  pipeline to  dataset
+    X_train_preproc_np = preprocessing_pipeline.fit_transform(X_train, y_train)
+
+    # Extract column names from transformers
+    #num_columnnames = preprocessor.transformers_[0][2]  # numeric columns
+    #cat_columnnames = preprocessor.transformers_[1][2]  # categorical columns
+    #tar_columnnames = preprocessor.transformers_[2][2]  # target encoded columns
 
     #all_columnnames = [num_columnnames + cat_columnnames + 'Property_type_2' + tar_columnnames]
 
@@ -144,7 +156,23 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     X_all = pd.concat([X_train_preproc, X_test_preproc], axis=0, ignore_index=True)
     y_all = pd.concat([y_train, y_test], axis=0, ignore_index=True)
 
-    col = list(X_all.columns) + ['price']
-    df_full = pd.concat([X_all, y_all], axis = 1, names = col)
+    return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all
 
-    return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all, df_full
+    #col = list(X_all.columns) + ['price']
+    #df_full = pd.concat([X_all, y_all], axis = 1, names = col)
+
+    #return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all, df_full
+
+  
+
+def preprocess_input(input_data : pd.DataFrame, robust = True) -> pd.DataFrame:
+    """ The preprocess_input function transforms the user input based on the pre-trained pipeline.
+    """
+    X_input = input_data
+
+    with open('preprocessing_pipeline.pkl', 'rb') as file:
+        trained_prepoc_pipeline = pickle.load(file)
+
+    X_input_preproc = pd.DataFrame(trained_prepoc_pipeline.transform(X_input))
+
+    return X_input_preproc
