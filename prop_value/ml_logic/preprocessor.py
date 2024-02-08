@@ -65,7 +65,6 @@ def clean_data(df_dvf: pd.DataFrame) -> pd.DataFrame:
     df_useful= df_useful.replace({'built' : trans_dict_built,
                                 'property_type' : trans_dict_type})
 
-
     #dropping the column with number of units (only 1s)
     df_useful = df_useful.drop(columns='number_of_units')
 
