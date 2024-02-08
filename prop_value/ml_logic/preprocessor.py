@@ -13,6 +13,7 @@ from sklearn.ensemble import RandomForestRegressor
 from category_encoders import TargetEncoder
 from sklearn.pipeline import FeatureUnion
 from sklearn.model_selection import train_test_split
+import pickle
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -127,6 +128,13 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     X_train_preproc_np = preprocessing_pipeline.fit_transform(X_train, y_train)
     X_test_preproc_np = preprocessing_pipeline.transform(X_test)
 
+    # Save trained preprocessing_pipeline
+    with open('preprocessing_pipeline.pkl', 'wb') as file:
+        pickle.dump(preprocessing_pipeline, file)
+
+    # Apply  pipeline to  dataset
+    X_train_preproc_np = preprocessing_pipeline.fit_transform(X_train, y_train)
+
     # Extract column names from transformers
     #num_columnnames = preprocessor.transformers_[0][2]  # numeric columns
     #cat_columnnames = preprocessor.transformers_[1][2]  # categorical columns
@@ -143,3 +151,16 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     y_all = pd.concat([y_train, y_test], axis=0, ignore_index=True)
 
     return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all
+
+
+def preprocess_input(input_data : pd.DataFrame, robust = True) -> pd.DataFrame:
+    """ The preprocess_input function transforms the user input based on the pre-trained pipeline.
+    """
+    X_input = input_data
+
+    with open('preprocessing_pipeline.pkl', 'rb') as file:
+        trained_prepoc_pipeline = pickle.load(file)
+
+    X_input_preproc = pd.DataFrame(trained_prepoc_pipeline.transform(X_input))
+
+    return X_input_preproc
