@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: prop_value
+Version: 0.0.0
+Summary: Property value prediction Model
+Requires-Dist: ipdb
+Requires-Dist: matplotlib
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: fastapi
+Requires-Dist: pytz
+Requires-Dist: uvicorn
+Requires-Dist: httpx
+Requires-Dist: pytest-asyncio
