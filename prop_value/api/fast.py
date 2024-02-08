@@ -2,10 +2,10 @@ import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pickle
-import XGBRegressor
+from xgboost import XGBRegressor
 
 #import required functions from ml_logic
-from prop_value.ml_logic.preprocessor import preprocess_data
+from prop_value.ml_logic.preprocessor import preprocess_input
 
 
 app = FastAPI()
@@ -32,9 +32,11 @@ def predict_price(
         living_area: float,  # 110.0
         latitude: float,    # -73.950655
         longitude: float,     # 40.783282
-        property_type: str, #Appartement or Maison
-        built: str, #Vente or Vente en l’état futur d’achèvement
-        number_of_rooms: float #3.0
+        property_type: str, #appartment or house
+        built: str, #built or off-plan
+        number_of_rooms: float, #3.0
+        postal_code: float, # 1000 #TODO: calculate based on user address input
+        city: int # 1000 #TODO: calculate based on user address input
     ):
     """
     Make a single price prediction for the property.
@@ -42,7 +44,7 @@ def predict_price(
     # Create X_pred DataFrame
     X_pred = pd.DataFrame(locals(), index=[0])
     # Preprocess features
-    X_processed = preprocess_data(X_pred)
+    X_processed = preprocess_input(X_pred)
 
     #call pre-loaded model to get prediction
     y_pred = model.predict(X_processed)
