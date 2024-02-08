@@ -1,7 +1,6 @@
 #to do: add/remove once packages become relevant
 
 ipdb
-matplotlib
 
 #API
 fastapi
@@ -10,3 +9,29 @@ uvicorn
 # tests
 httpx
 pytest-asyncio
+
+#cleaningdata
+pandas
+#from google.cloud import bigquery
+numpy
+matplotlib
+pathlib.Path
+
+#preprocessing
+sklearn.pipeline.Pipeline
+sklearn.impute.SimpleImputer
+sklearn.preprocessing.MinMaxScaler
+sklearn.preprocessing.OneHotEncoder
+sklearn.preprocessing.RobustScaler
+sklearn.compose.ColumnTransformer
+sklearn.ensemble.RandomForestRegressor
+category_encoders.TargetEncoder
+sklearn.pipeline.FeatureUnion
+sklearn.model_selection.train_test_split
+
+#model
+sklearn.ensemble.RandomForestRegressor
+sklearn.metrics.mean_squared_error
+sklearn.model_selection.cross_val_score
+xgboost.XGBRegressor
+pickle
