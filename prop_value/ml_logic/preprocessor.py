@@ -42,6 +42,8 @@ def clean_data(df_dvf: pd.DataFrame) -> pd.DataFrame:
             'latitude']
     df_dvf = df_dvf[keep_col]
 
+    # TO DO : keep surface_terrain -> NaN => 0 (gives an indication if there is a garden or not)
+
     #translate the columns
     df_dvf.columns = ['date', 'built', 'price', 'postal_code',
                 'city', 'region', 'number_of_units', 'property_type',
@@ -55,7 +57,6 @@ def clean_data(df_dvf: pd.DataFrame) -> pd.DataFrame:
     df_useful = df_dvf[((df_dvf['built'] == "Vente") | (df_dvf['built'] == "Vente en l'état futur d'achèvement")) &
                     ((df_dvf['number_of_units'] == 1) | (df_dvf['number_of_units'] == '1')) &
                     ((df_dvf['property_type'] == 'Appartement') | (df_dvf['property_type'] == 'Maison'))]
-
 
     #translate values
     trans_dict_built = {'Vente' : 'built',
@@ -123,12 +124,19 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     # preprocessing pipeline
     preprocessing_pipeline = Pipeline([('preprocessor', preprocessor)])
 
-    # Apply  pipeline to  dataset
-    X_train_preproc = preprocessing_pipeline.fit_transform(X_train, y_train)
+    # Apply  pipeline to  dataset AND keep column names
+    X_train_preproc_ = preprocessing_pipeline.fit_transform(X_train, y_train)
+    X_train_preproc = pd.DataFrame(X_train_preproc_, columns = preprocessing_pipeline.get_feature_names_out(X_train.columns))
+    X_test_preproc_ = preprocessing_pipeline.transform(X_test)
+    X_test_preproc = pd.DataFrame(X_test_preproc_, columns = preprocessing_pipeline.get_feature_names_out(X_test.columns))
 
-    X_test_preproc = preprocessing_pipeline.transform(X_test)
+    y_train = pd.DataFrame(y_train, columns = ['price'])
+    y_test = pd.DataFrame(y_test, columns = ['price'])
 
     X_all = pd.concat([X_train_preproc, X_test_preproc], axis=0, ignore_index=True)
     y_all = pd.concat([y_train, y_test], axis=0, ignore_index=True)
 
-    return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all
+    col = list(X_all.columns) + ['price']
+    df_full = pd.concat([X_all, y_all], axis = 1, names = col)
+
+    return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all, df_full

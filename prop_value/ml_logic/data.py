@@ -29,6 +29,7 @@ def download_all_csv():
             print(f'Downloaded region n° {num} 💪')
         else:
             print(f'region n° {num} is already downloaded ! 🚀')
+    print('🚀🚀🚀 All downloads done 🚀🚀🚀')
 
 def concat_all_csv():
     ## list all the number of regions we can download
@@ -39,9 +40,12 @@ def concat_all_csv():
     ### concat every file in 1 big df
     df = pd.DataFrame()
     for num in regions:
-        df = pd.concat([df, pd.read_csv(f'raw_data/dvf_{num}.csv')])
+        df = pd.concat([df, pd.read_csv(f'../raw_data/dvf_{num}.csv')])
         print(f'Concatenated region n°{num} to the df 🌍')
+    print('🌍🌍🌍 All files concatenated in 1 big df 🌍🌍🌍')
+    return df
 
+def save_csv(df):
     ### save full df raw as 1 csv
     df.to_csv(f'raw_data/dvf_full_raw.csv')
-    return df
+    print('⬇️ csv is downloaded.')
