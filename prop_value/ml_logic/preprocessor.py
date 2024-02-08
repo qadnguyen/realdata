@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib as plt
 from pathlib import Path
 
-# pip install category_encoders
+#pip install category_encoders
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, RobustScaler
@@ -69,6 +69,7 @@ def clean_data(df_dvf: pd.DataFrame) -> pd.DataFrame:
     #dropping the column with number of units (only 1s)
     df_useful = df_useful.drop(columns='number_of_units')
 
+
     #checking for NaN and duplicate values
     df_useful = df_useful.dropna()
     df_useful = df_useful.drop_duplicates()
@@ -128,4 +129,7 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
 
     X_test_preproc = preprocessing_pipeline.transform(X_test)
 
-    return X_train_preproc, X_test_preproc, y_train, y_test
+    X_all = pd.concat([X_train_preproc, X_test_preproc], axis=0, ignore_index=True)
+    y_all = pd.concat([y_train, y_test], axis=0, ignore_index=True)
+
+    return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all
