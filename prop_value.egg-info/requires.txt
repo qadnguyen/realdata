@@ -1,14 +1,9 @@
-#to do: add/remove once packages become relevant
-
 ipdb
 matplotlib
 pandas
 numpy
-
-#API
 fastapi
 pytz
 uvicorn
-# tests
 httpx
 pytest-asyncio
