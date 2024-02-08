@@ -1,14 +1,20 @@
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import pickle
+import XGBRegressor
+
 #import required functions from ml_logic
-#from taxifare.ml_logic.registry import load_model
+from prop_value.ml_logic.preprocessor import preprocess_data
 
 
 app = FastAPI()
-#model = load_model()#TODO load the model function from ml_logic
-#assert model is not None, "Model is not loaded"
-#app.state.model = model
+#load the model via pickle file
+path_to_file = '../../model_file/xgb_model.pkl'
+with open(path_to_file, 'rb') as file:
+    model = pickle.load(file)
+assert model is not None, "Model is not loaded"
+app.state.model = model
 
 # Allowing all middleware is optional, but good practice for dev purposes
 app.add_middleware(
@@ -36,10 +42,10 @@ def predict_price(
     # Create X_pred DataFrame
     X_pred = pd.DataFrame(locals(), index=[0])
     # Preprocess features
-    #X_processed = preprocess_features(X_pred) #TODO: create preprocess_features function
+    X_processed = preprocess_data(X_pred)
 
     #call pre-loaded model to get prediction
-    y_pred = model.predict(X_processed) #TODO: create predict function in ml_logic
+    y_pred = model.predict(X_processed)
+    print('Predicted price: ' + str(y_pred))
     y_pred = round(float(y_pred), 2)
-    y_pred = 10000
     return {'predicted_price': y_pred}

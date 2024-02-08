@@ -1,9 +1,11 @@
 #to do: add/remove once packages become relevant
 
+mlflow==2.1.1
 ipdb
 matplotlib
 pandas
 numpy
+pickl
 
 #API
 fastapi
