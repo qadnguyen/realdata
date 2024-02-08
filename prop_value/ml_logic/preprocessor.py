@@ -124,10 +124,21 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     preprocessing_pipeline = Pipeline([('preprocessor', preprocessor)])
 
     # Apply  pipeline to  dataset
-    X_train_preproc = preprocessing_pipeline.fit_transform(X_train, y_train)
+    X_train_preproc_np = preprocessing_pipeline.fit_transform(X_train, y_train)
+    X_test_preproc_np = preprocessing_pipeline.transform(X_test)
 
-    X_test_preproc = preprocessing_pipeline.transform(X_test)
+    # Extract column names from transformers
+    #num_columnnames = preprocessor.transformers_[0][2]  # numeric columns
+    #cat_columnnames = preprocessor.transformers_[1][2]  # categorical columns
+    #tar_columnnames = preprocessor.transformers_[2][2]  # target encoded columns
 
+    #all_columnnames = [num_columnnames + cat_columnnames + 'Property_type_2' + tar_columnnames]
+
+    # Add column names and turn into dataframes
+    X_train_preproc = pd.DataFrame(X_train_preproc_np) #columns=all_columnnames
+    X_test_preproc = pd.DataFrame(X_test_preproc_np) #columns=all_columnnames
+
+    # Concatenate test and train set
     X_all = pd.concat([X_train_preproc, X_test_preproc], axis=0, ignore_index=True)
     y_all = pd.concat([y_train, y_test], axis=0, ignore_index=True)
 
