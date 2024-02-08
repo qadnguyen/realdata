@@ -59,11 +59,11 @@ def clean_data(df_dvf: pd.DataFrame) -> pd.DataFrame:
 
     #translate values
     trans_dict_built = {'Vente' : 'built',
-                    'Vente en l’état futur d’achèvement' : 'off-plan'}
+                        "Vente en l'état futur d'achèvement" : 'off-plan'}
     trans_dict_type = {'Appartement' : 'appartment',
-                   'Maison' : 'house'}
+                    'Maison' : 'house'}
     df_useful= df_useful.replace({'built' : trans_dict_built,
-                             'property type' : trans_dict_type})
+                                'property_type' : trans_dict_type})
 
 
     #dropping the column with number of units (only 1s)
