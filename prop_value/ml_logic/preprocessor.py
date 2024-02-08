@@ -133,6 +133,14 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     y_train = pd.DataFrame(y_train, columns = ['price'])
     y_test = pd.DataFrame(y_test, columns = ['price'])
 
+
+    #all_columnnames = [num_columnnames + cat_columnnames + 'Property_type_2' + tar_columnnames]
+
+    # Add column names and turn into dataframes
+    X_train_preproc = pd.DataFrame(X_train_preproc_np) #columns=all_columnnames
+    X_test_preproc = pd.DataFrame(X_test_preproc_np) #columns=all_columnnames
+
+    # Concatenate test and train set
     X_all = pd.concat([X_train_preproc, X_test_preproc], axis=0, ignore_index=True)
     y_all = pd.concat([y_train, y_test], axis=0, ignore_index=True)
 
