@@ -35,12 +35,13 @@ def model_rfr(X_train, y_train, X_test, y_test, X_all, y_all):
 
 def model_xgb(X_train, y_train, X_test, y_test, X_all, y_all):
 
+    import pickle
+
     model_xgb = XGBRegressor()
 
     model_xgb.fit(X_train, y_train)
     with open('xgb_model.pkl', 'wb') as file:
         pickle.dump(model_xgb, file)
-
 
     y_pred = model_xgb.predict(X_test)
 
@@ -55,10 +56,9 @@ def model_xgb(X_train, y_train, X_test, y_test, X_all, y_all):
     baseline_cv_mean = 'Baseline cv score mean was 0.54'
 
     results = {'RMSE': rmse,
-               'Train score': train_score,
-               'Test score': test_score,
-               'CV mean': cv_mean,
-               'Baseline train score': baseline_train,
-               'Baseline cv score': baseline_cv_mean}
-
+                'Train score': train_score,
+                'Test score': test_score,
+                'CV mean': cv_mean,
+                'Baseline train score': baseline_train,
+                'Baseline cv score': baseline_cv_mean}
     return results
