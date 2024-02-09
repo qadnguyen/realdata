@@ -36,15 +36,14 @@ def predict_price(
         property_type: str, #appartment or house
         built: str, #built or off-plan
         number_of_rooms: float, #3.0
-        postal_code: float, # 1000 #TODO: calculate based on user address input
-        #city: int # 1000 #TODO: calculate based on user address input
+        postal_code: float, # 93000.0
     ):
     """
     Make a single price prediction for the property.
     """
     # Create X_pred DataFrame
     X_pred = pd.DataFrame(locals(), index=[0])
-    X_pred['city_code'] = get_citycode(X_pred['postal_code'][0])
+    X_pred['city'] = get_citycode(X_pred['postal_code'])
     # Preprocess features
     X_processed = preprocess_input(X_pred)
 
