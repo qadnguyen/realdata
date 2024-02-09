@@ -121,7 +121,7 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
     #formating data types
     df_clean[col_float] = df_clean[col_float].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('float64'))
     df_clean[col_date]= df_clean[col_date].apply(lambda x: pd.to_datetime(x, errors='coerce'))
-    df_clean[col_int]= df_clean[col_int].apply(pd.to_numeric, errors='coerce').astype('int64')
+    df_clean[col_int]= df_clean[col_int].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('int64'))
 
     ##### FILTER OUT OUTLIERS WITH PRICE PER M2 ABOVE P95 (or other if mentioned)
     # finding the percentile 95 for each postcode
@@ -137,9 +137,6 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
 
     # drop useless columns
     df_without_outliers = df_without_outliers.drop(columns=['p95', 'price_per_m2'])
-
-    #change strings in city to integers for a common city code
-    df_without_outliers['city'] = pd.to_numeric(df_without_outliers['city'], errors='coerce')
 
     return df_without_outliers
 
