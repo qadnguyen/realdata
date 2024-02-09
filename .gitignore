@@ -1,5 +1,5 @@
 raw_data/
 notebooks/
 model_file/
-prop_value/__pycache__
-prop_value/api/__pycache__
+catboost_info/
+*__pycache__*
