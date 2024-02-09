@@ -138,6 +138,9 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
     # drop useless columns
     df_without_outliers = df_without_outliers.drop(columns=['p95', 'price_per_m2'])
 
+    #change strings in city to integers for a common city code
+    df_without_outliers['city'] = pd.to_numeric(df_without_outliers['city'], errors='coerce')
+
     return df_without_outliers
 
 # def filter_data(max_price, max_area):
