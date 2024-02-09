@@ -6,6 +6,7 @@ from xgboost import XGBRegressor
 
 #import required functions from ml_logic
 from prop_value.ml_logic.preprocessor import preprocess_input
+from prop_value.ml_logic.geocoding import get_citycode
 
 
 app = FastAPI()
@@ -36,13 +37,14 @@ def predict_price(
         built: str, #built or off-plan
         number_of_rooms: float, #3.0
         postal_code: float, # 1000 #TODO: calculate based on user address input
-        city: int # 1000 #TODO: calculate based on user address input
+        #city: int # 1000 #TODO: calculate based on user address input
     ):
     """
     Make a single price prediction for the property.
     """
     # Create X_pred DataFrame
     X_pred = pd.DataFrame(locals(), index=[0])
+    X_pred['city_code'] = get_citycode(X_pred['postal_code'][0])
     # Preprocess features
     X_processed = preprocess_input(X_pred)
 
