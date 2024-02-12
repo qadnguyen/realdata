@@ -117,11 +117,16 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
     col_float = ['price', 'longitude', 'latitude', 'living_area', 'price_per_m2' ]
     col_string = ['built', 'region','property_type']
     col_date = ['date']
-    col_int = ['postal_code', 'nb_of_dep', 'number_of_rooms','city']
+    col_int = ['nb_of_dep', 'number_of_rooms','city']
     #formating data types
     df_clean[col_float] = df_clean[col_float].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('float64'))
     df_clean[col_date]= df_clean[col_date].apply(lambda x: pd.to_datetime(x, errors='coerce'))
+
+    print('Before transforming to integers')
+    df_clean['postal_code'] = df_clean['postal_code'].astype(str).str.strip('.0').apply(lambda x: str(x).ljust(5, '0')).astype('int64')
+    df_clean[['city']]= df_clean[['city']].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('int64'))
     df_clean[col_int]= df_clean[col_int].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('int64'))
+    print('After transforming to integers')
 
     ##### FILTER OUT OUTLIERS WITH PRICE PER M2 ABOVE P95 (or other if mentioned)
     # finding the percentile 95 for each postcode
@@ -137,6 +142,9 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
 
     # drop useless columns
     df_without_outliers = df_without_outliers.drop(columns=['p95', 'price_per_m2'])
+
+    #Float to int
+    df_without_outliers['postal_code'] = df_without_outliers['postal_code'].astype('int64')
 
     return df_without_outliers
 
