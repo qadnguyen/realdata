@@ -228,3 +228,17 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
     df_full = pd.concat([X_all, y_all], axis = 1, names = col)
 
     return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all, df_full
+
+
+def preprocess_input(input_data : pd.DataFrame, robust = True) -> pd.DataFrame:
+    """ The preprocess_input function transforms the user input based on the pre-trained pipeline.
+    """
+    X_input = input_data
+
+    file_path = '../../raw_data/preprocessing_pipeline.pkl'
+    with open(file_path, 'rb') as file:
+        trained_prepoc_pipeline = pickle.load(file)
+
+    X_input_preproc = pd.DataFrame(trained_prepoc_pipeline.transform(X_input))
+
+    return X_input_preproc
