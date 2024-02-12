@@ -1,3 +1,5 @@
 raw_data/
-notebooks/notebooks_test_jw.ipynb
+notebooks/
 model_file/
+catboost_info/
+*__pycache__*

@@ -44,7 +44,7 @@ def predict_price(
     """
     # Create X_pred DataFrame
     X_pred = pd.DataFrame(locals(), index=[0])
-    X_pred['city_code'] = get_citycode(X_pred['postal_code'][0])
+    X_pred['city'] = get_citycode(X_pred['postal_code'])
     # Preprocess features
     X_processed = preprocess_input(X_pred)
 
