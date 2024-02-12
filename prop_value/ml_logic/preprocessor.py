@@ -122,11 +122,9 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
     df_clean[col_float] = df_clean[col_float].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('float64'))
     df_clean[col_date]= df_clean[col_date].apply(lambda x: pd.to_datetime(x, errors='coerce'))
 
-    print('Before transforming to integers')
     df_clean['postal_code'] = df_clean['postal_code'].astype(str).str.strip('.0').apply(lambda x: str(x).ljust(5, '0')).astype('int64')
     df_clean[['city']]= df_clean[['city']].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('int64'))
     df_clean[col_int]= df_clean[col_int].apply(lambda x: pd.to_numeric(x, errors='coerce').astype('int64'))
-    print('After transforming to integers')
 
     ##### FILTER OUT OUTLIERS WITH PRICE PER M2 ABOVE P95 (or other if mentioned)
     # finding the percentile 95 for each postcode
@@ -145,6 +143,20 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
 
     #Float to int
     df_without_outliers['postal_code'] = df_without_outliers['postal_code'].astype('int64')
+
+    #Create new (cyclic) columns for day, month and (non-cyclic) year
+    df_without_outliers['day'] = df_without_outliers.date.dt.day
+    df_without_outliers['day_sin'] = np.sin(2 * np.pi * df_without_outliers['day']/31.0)
+    df_without_outliers['day_cos'] = np.cos(2 * np.pi * df_without_outliers['day']/31.0)
+
+    df_without_outliers['month'] = df_without_outliers.date.dt.month
+    df_without_outliers['month_sin'] = np.sin(2 * np.pi * df_without_outliers['month']/12.0)
+    df_without_outliers['month_cos'] = np.cos(2 * np.pi * df_without_outliers['month']/12.0)
+
+    df_without_outliers['year'] = df_without_outliers.date.dt.year
+
+    #drop day and year columns
+    df_without_outliers = df_without_outliers.drop(columns =['day','month'])
 
     return df_without_outliers
 
@@ -178,20 +190,41 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
 
     # Parallelize "num_transformer" and "cat_transfomer"
     preprocessor = ColumnTransformer([
-            ('num', numeric_transformer, ['living_area', 'number_of_rooms', 'longitude', 'latitude']),
-            ('cat', categorical_transformer, ['property_type']),
-            ('tar', targetencoder_transformer, ['city', 'postal_code'])
+            ('num', numeric_transformer, ['living_area', 'number_of_rooms',
+                                          'nb_of_dep',
+                                          'longitude', 'latitude',
+                                          'day_sin', 'day_cos',
+                                          'month_sin', 'month_cos',
+                                          'year']),
+            ('cat', categorical_transformer, ['property_type', 'built']),
+            ('tar', targetencoder_transformer, ['city', 'postal_code', 'region'])
             ])
 
-    # preprocessing pipeline
+        # preprocessing pipeline
     preprocessing_pipeline = Pipeline([('preprocessor', preprocessor)])
 
-    # Apply  pipeline to  dataset
-    X_train_preproc = preprocessing_pipeline.fit_transform(X_train, y_train)
+    # fit pipeline to  dataset + transform X_train
+    X_train_preproc_ = preprocessing_pipeline.fit_transform(X_train, y_train)
 
-    X_test_preproc = preprocessing_pipeline.transform(X_test)
+    # Save trained preprocessing_pipeline
+    with open('preprocessing_pipeline.pkl', 'wb') as file:
+        pickle.dump(preprocessing_pipeline, file)
 
+    # transform X_test
+    X_test_preproc_ = preprocessing_pipeline.transform(X_test)
+
+    # change in df with right column names
+    X_train_preproc = pd.DataFrame(X_train_preproc_, columns = preprocessing_pipeline.get_feature_names_out(X_train.columns))
+    X_test_preproc = pd.DataFrame(X_test_preproc_, columns = preprocessing_pipeline.get_feature_names_out(X_test.columns))
+    y_train = pd.DataFrame(y_train, columns = ['price'])
+    y_test = pd.DataFrame(y_test, columns = ['price'])
+
+    # Concatenate test and train set
     X_all = pd.concat([X_train_preproc, X_test_preproc], axis=0, ignore_index=True)
     y_all = pd.concat([y_train, y_test], axis=0, ignore_index=True)
 
-    return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all
+    # Concatenate X and y to have a full dataframe
+    col = list(X_all.columns) + ['price']
+    df_full = pd.concat([X_all, y_all], axis = 1, names = col)
+
+    return X_train_preproc, X_test_preproc, y_train, y_test, X_all, y_all, df_full
