@@ -113,6 +113,10 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
 
     df_clean['price_per_m2'] = df_clean['price'] / df_clean['living_area']
 
+    #Taking care of the city codes with letters
+    df_clean['city'] = df_clean['city'].replace('2B', '20', regex = True)
+    df_clean['city'] = df_clean['city'].replace('2A', '20', regex = True)
+
     #changing evething to the right type
     col_float = ['price', 'longitude', 'latitude', 'living_area', 'price_per_m2' ]
     col_string = ['built', 'region','property_type']
