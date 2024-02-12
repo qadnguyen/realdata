@@ -142,7 +142,7 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
     mask_outliers = (df_clean_merged.price_per_m2 < df_clean_merged.p95)
     df_without_outliers = df_clean_merged[mask_outliers]
 
-    ##### FILTER OUT OUTLIERS WITH PRICE PER M2 UNDER P04 (or other if mentioned)
+    ##### FILTER OUT OUTLIERS WITH PRICE PER M2 UNDER P04
     # finding the percentile 04 for each postcode
     df_quantile_low = df_without_outliers[['postal_code', 'price_per_m2']].groupby(by = df_without_outliers.postal_code, as_index=False).quantile(0.04)
     df_quantile_low.columns = ['postal_code', 'p04']
