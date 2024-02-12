@@ -142,8 +142,20 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
     mask_outliers = (df_clean_merged.price_per_m2 < df_clean_merged.p95)
     df_without_outliers = df_clean_merged[mask_outliers]
 
+    ##### FILTER OUT OUTLIERS WITH PRICE PER M2 UNDER P04 (or other if mentioned)
+    # finding the percentile 04 for each postcode
+    df_quantile_low = df_without_outliers[['postal_code', 'price_per_m2']].groupby(by = df_without_outliers.postal_code, as_index=False).quantile(0.04)
+    df_quantile_low.columns = ['postal_code', 'p04']
+
+    # merge the df
+    df_clean_merged = df_quantile_low.merge(right = df_without_outliers, on = 'postal_code')
+
+    # drop the outliers
+    mask_outliers = (df_clean_merged.price_per_m2 > df_clean_merged.p04)
+    df_without_outliers = df_clean_merged[mask_outliers]
+
     # drop useless columns
-    df_without_outliers = df_without_outliers.drop(columns=['p95', 'price_per_m2'])
+    df_without_outliers = df_without_outliers.drop(columns=['p04', 'p95', 'price_per_m2'])
 
     #Float to int
     df_without_outliers['postal_code'] = df_without_outliers['postal_code'].astype('int64')
@@ -246,3 +258,31 @@ def preprocess_input(input_data : pd.DataFrame, robust = True) -> pd.DataFrame:
     X_input_preproc = pd.DataFrame(trained_prepoc_pipeline.transform(X_input))
 
     return X_input_preproc
+
+
+def create_dict(cleaned_df):
+    codes_df = cleaned_df[['postal_code', 'city']]
+    # Create dictionary
+    codes_dict = dict(zip(cleaned_df['postal_code'], cleaned_df['city']))
+    # Convert values to a list
+    city_values = list(codes_dict.values())
+    pc_values = list(codes_dict.keys())
+    # Check for duplicate cities
+    duplicate_cities = any(city_values.count(city) > 1 for city in set(city_values))
+    duplicate_pc = any(pc_values.count(postcode) > 1 for postcode in set(pc_values))
+    # Print warning if duplicates are found
+    if duplicate_cities:
+        print("Duplicate cities detected in the dictionary. All good.")
+    if duplicate_pc:
+        print("Duplicate post codes detected in the dictionary. Not good.")
+        # Check if each postal code corresponds to only one city
+        unique_postal_codes = codes_df['postal_code'].unique()
+        for postal_code in unique_postal_codes:
+            cities_for_postal_code = codes_df[codes_df['postal_code'] == postal_code]['city'].unique()
+            if len(cities_for_postal_code) > 1:
+                print(f"Postal code {postal_code} corresponds to multiple cities: {cities_for_postal_code}")
+    # Write dictionary to pickle
+    with open('codes_dict.pkl', 'wb') as file:
+        pickle.dump(codes_dict, file)
+
+    return codes_dict
