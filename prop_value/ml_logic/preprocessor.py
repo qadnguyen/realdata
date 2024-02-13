@@ -251,7 +251,7 @@ def preprocess_input(input_data : pd.DataFrame, robust = True) -> pd.DataFrame:
     """
     X_input = input_data
 
-    file_path = '../../raw_data/preprocessing_pipeline.pkl'
+    file_path = 'raw_data/preprocessing_pipeline.pkl'
     with open(file_path, 'rb') as file:
         trained_prepoc_pipeline = pickle.load(file)
 
