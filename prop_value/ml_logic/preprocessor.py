@@ -159,22 +159,26 @@ def clean_data(df_dvf: pd.DataFrame, percentile = 0.95) -> pd.DataFrame:
 
     #Float to int
     df_without_outliers['postal_code'] = df_without_outliers['postal_code'].astype('int64')
-
-    #Create new (cyclic) columns for day, month and (non-cyclic) year
-    df_without_outliers['day'] = df_without_outliers.date.dt.day
-    df_without_outliers['day_sin'] = np.sin(2 * np.pi * df_without_outliers['day']/31.0)
-    df_without_outliers['day_cos'] = np.cos(2 * np.pi * df_without_outliers['day']/31.0)
-
-    df_without_outliers['month'] = df_without_outliers.date.dt.month
-    df_without_outliers['month_sin'] = np.sin(2 * np.pi * df_without_outliers['month']/12.0)
-    df_without_outliers['month_cos'] = np.cos(2 * np.pi * df_without_outliers['month']/12.0)
-
-    df_without_outliers['year'] = df_without_outliers.date.dt.year
-
-    #drop day and year columns
-    df_without_outliers = df_without_outliers.drop(columns =['day','month'])
+    df_without_outliers = convert_date(df_without_outliers)
 
     return df_without_outliers
+
+def convert_date(df):
+    #Create new (cyclic) columns for day, month and (non-cyclic) year
+    df['day'] = df.date.dt.day
+    df['day_sin'] = np.sin(2 * np.pi * df['day']/31.0)
+    df['day_cos'] = np.cos(2 * np.pi * df['day']/31.0)
+
+    df['month'] = df.date.dt.month
+    df['month_sin'] = np.sin(2 * np.pi * df['month']/12.0)
+    df['month_cos'] = np.cos(2 * np.pi * df['month']/12.0)
+
+    df['year'] = df.date.dt.year
+
+    #drop day and year columns
+    #TODO: drop date and retrain the model. Update api predicition function
+    df = df.drop(columns =['day','month'])
+    return df
 
 # def filter_data(max_price, max_area):
 
@@ -189,6 +193,8 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
 
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size= 0.3)
 
+    print('Input data to train the model: ')
+    print(X_train.dtypes)
     # Preprocessing numerical data
     numeric_transformer = Pipeline([
         ('minmax', (RobustScaler() if robust == True else MinMaxScaler()))
@@ -251,11 +257,13 @@ def preprocess_input(input_data : pd.DataFrame, robust = True) -> pd.DataFrame:
     """
     X_input = input_data
 
-    file_path = '../../raw_data/preprocessing_pipeline.pkl'
+    file_path = 'pickles/preprocessing_pipeline.pkl'
     with open(file_path, 'rb') as file:
         trained_prepoc_pipeline = pickle.load(file)
 
     X_input_preproc = pd.DataFrame(trained_prepoc_pipeline.transform(X_input))
+    #print(trained_prepoc_pipeline.get_feature_names_out())
+    X_input_preproc = pd.DataFrame(X_input_preproc, columns = trained_prepoc_pipeline.get_feature_names_out())
 
     return X_input_preproc
 

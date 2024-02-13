@@ -1,5 +1,4 @@
 raw_data/
-notebooks/
 model_file/
 catboost_info/
 *__pycache__*

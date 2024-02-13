@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pickle
 from xgboost import XGBRegressor
+import numpy as np
+from datetime import datetime
+from prop_value.ml_logic.preprocessor import convert_date
 
 #import required functions from ml_logic
 from prop_value.ml_logic.preprocessor import preprocess_input
@@ -11,7 +14,7 @@ from prop_value.ml_logic.geocoding import get_citycode
 
 app = FastAPI()
 #load the model via pickle file
-path_to_file = '../../model_file/xgb_model.pkl'
+path_to_file = 'pickles/xgb_model.pkl'
 with open(path_to_file, 'rb') as file:
     model = pickle.load(file)
 assert model is not None, "Model is not loaded"
@@ -36,7 +39,8 @@ def predict_price(
         property_type: str, #appartment or house
         built: str, #built or off-plan
         number_of_rooms: float, #3.0
-        postal_code: int, # 1000 #TODO: calculate based on user address input
+        postal_code: int, # 1000
+        nb_of_dep: int, # 2
     ):
     """
     Make a single price prediction for the property.
@@ -45,8 +49,19 @@ def predict_price(
     X_pred = pd.DataFrame(locals(), index=[0])
     # City code needs to be retrieved from dictionary via postal code
     X_pred['city'] = get_citycode(X_pred['postal_code'])
+    X_pred['date'] = datetime.today()
+    X_pred = convert_date(X_pred)
+
+    #create region code
+    X_pred['region'] = str(X_pred['postal_code'][:2])
+
+    #print('Input data to make prediction:')
+    #print(X_pred.columns)
+
     # Preprocess features
     X_processed = preprocess_input(X_pred)
+
+    print(X_processed)
 
     #call pre-loaded model to get prediction
     y_pred = model.predict(X_processed)

@@ -5,4 +5,4 @@ reinstall_package:
 
 
 run_api:
-	uvicorn realdata.api.fast:app --reload
+	uvicorn prop_value.api.fast:app --reload
