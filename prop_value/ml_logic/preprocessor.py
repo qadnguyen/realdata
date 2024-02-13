@@ -212,8 +212,8 @@ def preprocess_data(df_clean : pd.DataFrame, robust = True) -> pd.DataFrame:
                                           'day_sin', 'day_cos',
                                           'month_sin', 'month_cos',
                                           'year']),
-            ('cat', categorical_transformer, ['property_type', 'built', 'postal_code']),
-            ('tar', targetencoder_transformer, ['city', 'region']) #postal_code', 'region'
+            ('cat', categorical_transformer, ['property_type', 'built']),
+            ('tar', targetencoder_transformer, ['city', 'region', 'postal_code']) #postal_code', 'region'
             ])
 
         # preprocessing pipeline
