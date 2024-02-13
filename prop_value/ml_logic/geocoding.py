@@ -9,7 +9,7 @@ def get_citycode(postal_code: float) -> float:
     Get the city code based on the postal code.
     """
     #load pickle file with city codes and postal codes
-    file_path = os.path.abspath('../../raw_data/codes_dict.pkl')
+    file_path = os.path.abspath('raw_data/codes_dict.pkl')
 
     with open(file_path, 'rb') as file:
         citycodes = pickle.load(file)
