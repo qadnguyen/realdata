@@ -4,3 +4,5 @@ catboost_info/
 *__pycache__*
 
 personal_folder/
+
+pickles/xgb_model_best
