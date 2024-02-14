@@ -14,7 +14,7 @@ from prop_value.ml_logic.geocoding import get_citycode
 
 app = FastAPI()
 #load the model via pickle file
-path_to_file = 'pickles/xgb_model.pkl'
+path_to_file = 'pickles/xgb_model_best.pkl'
 with open(path_to_file, 'rb') as file:
     model = pickle.load(file)
 assert model is not None, "Model is not loaded"

@@ -2,5 +2,6 @@ raw_data/
 model_file/
 catboost_info/
 *__pycache__*
+pickles/xgb_model_best.pkl
 
 personal_folder/
