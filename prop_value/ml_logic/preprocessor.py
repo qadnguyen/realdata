@@ -261,10 +261,10 @@ def preprocess_input(input_data : pd.DataFrame, robust = True) -> pd.DataFrame:
     with open(file_path, 'rb') as file:
         trained_prepoc_pipeline = pickle.load(file)
 
-    X_input_preproc = pd.DataFrame(trained_prepoc_pipeline.transform(X_input))
+    X_input_preproc = trained_prepoc_pipeline.transform(X_input)
     #print(trained_prepoc_pipeline.get_feature_names_out())
     X_input_preproc = pd.DataFrame(X_input_preproc, columns = trained_prepoc_pipeline.get_feature_names_out())
-
+    #print preprocess input
     return X_input_preproc
 
 
@@ -292,5 +292,5 @@ def create_dict(cleaned_df):
     # Write dictionary to pickle
     with open('codes_dict.pkl', 'wb') as file:
         pickle.dump(codes_dict, file)
-
+    print('cleaned_df', cleaned_df)
     return codes_dict

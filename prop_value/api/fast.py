@@ -33,13 +33,13 @@ app.add_middleware(
 # http://127.0.0.1:8000/predict?pickup_datetime=2012-10-06 12:10:20&pickup_longitude=40.7614327&pickup_latitude=-73.9798156&dropoff_longitude=40.6513111&dropoff_latitude=-73.8803331&passenger_count=2
 @app.get("/predict_price")
 def predict_price(
-        living_area: float,  # 110.0
+        living_area: float,  # 110
         latitude: float,    # -73.950655
         longitude: float,     # 40.783282
         property_type: str, #appartment or house
         built: str, #built or off-plan
-        number_of_rooms: float, #3.0
-        postal_code: int, # 1000
+        number_of_rooms: float, #3
+        postal_code: int, # 93000
         nb_of_dep: int, # 2
     ):
     """
@@ -52,6 +52,7 @@ def predict_price(
     X_pred['date'] = datetime.today()
     X_pred = convert_date(X_pred)
 
+
     #create region code
     X_pred['region'] = str(X_pred['postal_code'][:2])
 
@@ -61,10 +62,7 @@ def predict_price(
     # Preprocess features
     X_processed = preprocess_input(X_pred)
 
-    print(X_processed)
-
     #call pre-loaded model to get prediction
     y_pred = model.predict(X_processed)
-    print('Predicted price: ' + str(y_pred))
     y_pred = round(float(y_pred), 2)
     return {'predicted_price': y_pred}
