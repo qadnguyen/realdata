@@ -1,4 +1,19 @@
 Metadata-Version: 2.1
-Name: prop-value
+Name: prop_value
 Version: 0.0.0
 Summary: Property value prediction Model
+Requires-Dist: mlflow==2.1.1
+Requires-Dist: ipdb
+Requires-Dist: fastapi
+Requires-Dist: pytz
+Requires-Dist: uvicorn
+Requires-Dist: httpx
+Requires-Dist: pytest-asyncio
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: pathlib
+Requires-Dist: scikit-learn
+Requires-Dist: category_encoders
+Requires-Dist: xgboost
+Requires-Dist: pickl
