@@ -5,3 +5,5 @@ catboost_info/
 pickles/xgb_model_best.pkl
 
 personal_folder/
+
+pickles/xgb_model_best

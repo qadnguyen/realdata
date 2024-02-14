@@ -3,12 +3,11 @@ reinstall_package:
 	@pip uninstall -y realdata || :
 	@pip install -e .
 
-
 run_api:
 	uvicorn prop_value.api.fast:app --reload
 
 gar_creation:
-  gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev \
+	gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev \
 	gcloud artifacts repositories create ${GAR_REPO} --repository-format=docker \
 	--location=${GCP_REGION} --description="Repository for storing ${GAR_REPO} images"
 
